@@ -58,12 +58,12 @@ class MYGUI():
                         self.img_label = tk.Label(
                             self.root, text=wire_img[c], font=('Arial', 20))
                         self.img_label.grid(
-                            row=0, column=0, sticky=tk.W+tk.E+tk.S+tk.N)
+                            row=0, column=2, sticky=tk.W+tk.E+tk.S+tk.N)
 
                         self.img_label = tk.Label(
                             self.root, text=f'Total Image Left:{len(wire_img)}', font=('Arial', 20))
                         self.img_label.grid(
-                            row=0, column=2, sticky=tk.W+tk.E+tk.S+tk.N)
+                            row=0, column=1, sticky=tk.W+tk.E+tk.S+tk.N)
                     LABEL()
 
                     def IMAGE1():
@@ -78,11 +78,15 @@ class MYGUI():
                             self.photo_label2.grid(
                                 row=1, column=0, sticky=tk.W+tk.E+tk.S+tk.N)
                         except UnidentifiedImageError:
-                            print('NOT IMGS')
                             self.photo_label2 = tk.Label(
                                 self.root, text="NOT IMAGE")
                             self.photo_label2.grid(
-                                row=0, column=2, sticky=tk.W+tk.E+tk.S+tk.N)
+                                row=0, column=0, sticky=tk.W+tk.E+tk.S+tk.N)
+                        except FileNotFoundError:
+                            self.photo_label2 = tk.Label(
+                                self.root, text="IMAGE NOT FOUND",font=('Arial',20))
+                            self.photo_label2.grid(
+                                row=1, column=0, sticky=tk.W+tk.E+tk.S+tk.N)
 
                     def IMAGE2():
                         global img1
@@ -98,6 +102,12 @@ class MYGUI():
                             print('NOT IMGS')
                             self.photo_label1 = tk.Label(
                                 self.root, text="NOT IMAGE")
+                            self.photo_label1.grid(
+                                row=0, column=2, sticky=tk.W+tk.E+tk.S+tk.N)
+                        except FileNotFoundError:
+                            print('NOT IMGS')
+                            self.photo_label1 = tk.Label(
+                                self.root, text="IMAGE NOT FOUND",font=('Arial',20))
                             self.photo_label1.grid(
                                 row=0, column=2, sticky=tk.W+tk.E+tk.S+tk.N)
 
@@ -163,6 +173,7 @@ class MYGUI():
                         if os.path.exists(wire_path+'/'+wire_img[c]):
                             os.remove(wire_path+'/'+wire_img[c])
                             wire_img.pop(c)
+                            NEXXT()
                     button1 = tk.Button(btn_fram, text="NEXT", font=(
                         'Arial', 20), command=NEXXT)
                     button1.pack(expand=1, fill='both')
@@ -212,7 +223,7 @@ class MYGUI():
         dir_btn1 = tk.Button(newWindow, text="Browse", command=lambda: self.set_dir(dir_path1), font=(
             'Arial', 20)).grid(row=0, column=2, sticky=tk.W+tk.E+tk.S+tk.N, padx=10, pady=10)
 
-        dir_name2 = tk.Label(newWindow, text='Wireframe', font=('Arial', 20)).grid(
+        dir_name2 = tk.Label(newWindow, text='Semantics', font=('Arial', 20)).grid(
             column=0, row=1, sticky=tk.W+tk.E+tk.S+tk.N, padx=10, pady=10)
         dir_path2 = tk.Label(newWindow, relief=tk.SUNKEN, font=('Arial', 20))
         dir_path2.grid(row=1, column=1, padx=10, pady=10,
@@ -220,7 +231,7 @@ class MYGUI():
         dir_btn2 = tk.Button(newWindow, text="Browse", command=lambda: self.set_dir(dir_path2), font=(
             'Arial', 20)).grid(row=1, column=2, sticky=tk.W+tk.E+tk.S+tk.N, padx=10, pady=10)
 
-        dir_name3 = tk.Label(newWindow, text='Sorted folder', font=('Arial', 20)).grid(
+        dir_name3 = tk.Label(newWindow, text='Sort folder', font=('Arial', 20)).grid(
             column=0, row=2, sticky=tk.W+tk.E+tk.S+tk.N, padx=10, pady=10)
         dir_path3 = tk.Label(newWindow, relief=tk.SUNKEN, font=('Arial', 20))
         dir_path3.grid(row=2, column=1, padx=10, pady=10,
@@ -238,8 +249,9 @@ class MYGUI():
         def confirm():
             ff = open('config', 'w')
             s1 = dir_path1.cget('text')
-            if len(s1) != 0:
-                ff.writelines(s1+'\n')
+            if s1=='':
+                s1=os.path.expanduser("~\Desktop")
+            ff.writelines(s1+'\n')
             s2 = dir_path2.cget('text')
             if len(s2) != 0:
                 ff.writelines(s2+'\n')
